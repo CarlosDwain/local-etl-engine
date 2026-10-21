@@ -1,0 +1,100 @@
+[project]
+name = "etl"
+version = "0.1.0"
+description = "Modern local ETL: DuckDB + Parquet, layered (ports and adapters) architecture"
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb>=1.1",
+    "python-calamine>=0.3",
+    "xlsxwriter>=3.2",
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "typer>=0.12",
+]
+
+[project.scripts]
+etl = "etl.interfaces.cli.app:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "import-linter>=2.0",
+    "types-PyYAML",
+    "pre-commit>=3.7",
+]
+build = ["pyinstaller>=6.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/etl"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests", "tools"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "C4", "RUF", "PTH", "T20", "TID"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["etl", "tests"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "src"
+files = ["src", "tests", "tools", "scripts"]
+
+[[tool.mypy.overrides]]
+module = ["python_calamine.*", "xlsxwriter.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+markers = ["integration: uses real adapters (DuckDB, filesystem)"]
+
+[tool.importlinter]
+root_package = "etl"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "A-2 domain is pure"
+type = "forbidden"
+source_modules = ["etl.domain"]
+forbidden_modules = [
+    "etl.application", "etl.infrastructure", "etl.interfaces", "etl.container", "etl.config",
+    "duckdb", "pandas", "polars", "tkinter", "yaml", "pydantic", "typer",
+    "python_calamine", "xlsxwriter",
+]
+
+[[tool.importlinter.contracts]]
+name = "A-3 application depends only on domain and ports"
+type = "forbidden"
+source_modules = ["etl.application"]
+forbidden_modules = [
+    "etl.infrastructure", "etl.interfaces", "etl.container", "etl.config",
+    "duckdb", "pandas", "polars", "tkinter", "yaml", "pydantic", "typer",
+    "python_calamine", "xlsxwriter",
+]
+
+[[tool.importlinter.contracts]]
+name = "A-1 infrastructure never imports interfaces"
+type = "forbidden"
+source_modules = ["etl.infrastructure"]
+forbidden_modules = ["etl.interfaces", "etl.container"]
+
+[[tool.importlinter.contracts]]
+name = "A-10 interfaces reach adapters only through the container"
+type = "forbidden"
+source_modules = ["etl.interfaces"]
+forbidden_modules = ["etl.infrastructure"]
+allow_indirect_imports = true

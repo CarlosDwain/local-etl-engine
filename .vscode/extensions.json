@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "ms-python.mypy-type-checker",
+    "charliermarsh.ruff",
+    "github.copilot",
+    "github.copilot-chat",
+    "redhat.vscode-yaml",
+    "tamasfe.even-better-toml"
+  ]
+}

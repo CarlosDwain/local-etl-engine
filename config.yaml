@@ -1,0 +1,6 @@
+# Runtime configuration. Relative paths resolve against this file's folder.
+source_dir: landing          # where the Excel files are (user sets this)
+output_dir: output           # final Excel / Parquet outputs (user sets this)
+contracts_dir: contracts
+# working_dir: omitted on purpose -> %LOCALAPPDATA%\FinanceETL\data (automatic).
+# Must be local, never inside a OneDrive/SharePoint synced folder (rule D-12).

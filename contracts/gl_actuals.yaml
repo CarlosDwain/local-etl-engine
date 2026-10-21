@@ -1,0 +1,17 @@
+# EXAMPLE contract using invented headers. Replace with a real source's structure (no real values).
+name: gl_actuals
+version: 1
+file_pattern: "GL_*.xlsx"
+period_from_filename: "GL_(\\d{4}-\\d{2})\\.xlsx"
+sheet:
+  name: Data
+  header_row: 3
+  skip_footer_rows: 1
+columns:
+  - { source: "Document Number", name: document_number, type: string,        required: true }
+  - { source: "Line Number",     name: line_number,     type: int,           required: true }
+  - { source: "Posting Date",    name: posting_date,    type: date,          required: true }
+  - { source: "GL Account",      name: gl_account,      type: string,        required: true }
+  - { source: "Amount (USD)",    name: amount_usd,      type: decimal(18,2), required: true, aliases: ["Amt USD"] }
+  - { source: "Cost Center",     name: cost_center,     type: string,        required: false }
+keys: [document_number, line_number]
