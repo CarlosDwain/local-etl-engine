@@ -12,6 +12,6 @@ columns:
   - { source: "Line Number",     name: line_number,     type: int,           required: true }
   - { source: "Posting Date",    name: posting_date,    type: date,          required: true }
   - { source: "GL Account",      name: gl_account,      type: string,        required: true }
-  - { source: "Amount (USD)",    name: amount_usd,      type: decimal(18,2), required: true, aliases: ["Amt USD"] }
+  - { source: "Amount (USD)",    name: amount_usd,      type: "decimal(18,2)", required: true, aliases: ["Amt USD"] }
   - { source: "Cost Center",     name: cost_center,     type: string,        required: false }
 keys: [document_number, line_number]

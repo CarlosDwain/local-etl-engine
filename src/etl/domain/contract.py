@@ -6,6 +6,12 @@ from enum import StrEnum
 from etl.domain.errors import ContractError
 
 
+class DriftAction(StrEnum):
+    FAIL = "fail"
+    WARN = "warn"
+    IGNORE = "ignore"
+
+
 class ColumnType(StrEnum):
     STRING = "string"
     DATE = "date"
@@ -21,12 +27,38 @@ class ExtraColumns(StrEnum):
 
 
 @dataclass(frozen=True)
+class DriftPolicy:
+    missing_required_column: DriftAction = DriftAction.FAIL
+    unknown_column: DriftAction = DriftAction.WARN
+
+
+@dataclass(frozen=True)
 class ColumnSpec:
     source: str  # header text in the Excel file
     name: str  # canonical snake_case name
     type: ColumnType
     required: bool = True
     aliases: tuple[str, ...] = ()
+    precision: int | None = None
+    scale: int | None = None
+
+    def __post_init__(self) -> None:
+        if self.type is ColumnType.DECIMAL:
+            if (self.precision is None) != (self.scale is None):
+                raise ContractError(
+                    f"{self.name}: decimal precision and scale must be specified together"
+                )
+            if self.precision is not None and (
+                self.precision < 1
+                or self.scale is None
+                or self.scale < 0
+                or self.scale > self.precision
+            ):
+                raise ContractError(f"{self.name}: invalid decimal precision or scale")
+        elif self.precision is not None or self.scale is not None:
+            raise ContractError(
+                f"{self.name}: precision and scale are only valid for decimal columns"
+            )
 
     @property
     def accepted_headers(self) -> tuple[str, ...]:
@@ -51,8 +83,12 @@ class Contract:
     generated_key: bool = False
     sheet: SheetSpec = field(default_factory=SheetSpec)
     extra_columns: ExtraColumns = ExtraColumns.WARN
+    drift_policy: DriftPolicy = field(default_factory=DriftPolicy)
+    max_reject_rate: float = 0.05
 
     def __post_init__(self) -> None:
+        if not 0.0 <= self.max_reject_rate <= 1.0:
+            raise ContractError(f"{self.name}: max_reject_rate must be between 0 and 1")
         names = [column.name for column in self.columns]
         if len(set(names)) != len(names):
             raise ContractError(f"{self.name}: duplicate column names")
