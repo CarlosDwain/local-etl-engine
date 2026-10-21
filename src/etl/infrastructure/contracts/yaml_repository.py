@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Literal
+from typing import Literal, cast
 
 import yaml
 from pydantic import (
@@ -144,9 +144,13 @@ class YamlContractRepository:
             return {}
         if not isinstance(contents, Mapping):
             raise ContractError(f"{path.name}: YAML document must be a mapping")
-        if any(not isinstance(key, str) for key in contents):
-            raise ContractError(f"{path.name}: YAML mapping keys must be strings")
-        return dict(contents)
+        yaml_mapping = cast(Mapping[object, object], contents)
+        result: dict[str, object] = {}
+        for key, value in yaml_mapping.items():
+            if not isinstance(key, str):
+                raise ContractError(f"{path.name}: YAML mapping keys must be strings")
+            result[key] = value
+        return result
 
     def _load_defaults(self, path: Path) -> dict[str, object]:
         raw_defaults = self._read_yaml(path)
