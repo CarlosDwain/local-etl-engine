@@ -14,6 +14,52 @@ uv run etl --help
 
 Requires Python 3.12 and [uv](https://docs.astral.sh/uv/).
 
+## Generate synthetic source data
+
+The generator creates Excel workbooks and `ground_truth.json` in a new or empty output directory.
+Use separate directories for the benchmark sizes:
+
+```
+uv run python tools\generate_data.py --rows 100000 --seed 42 --profile clean --output-dir data\synthetic\clean-100k
+uv run python tools\generate_data.py --rows 1000000 --seed 42 --profile clean --output-dir data\synthetic\clean-1m
+uv run python tools\generate_data.py --rows 5000000 --seed 42 --profile clean --output-dir data\synthetic\clean-5m
+uv run python tools\generate_data.py --rows 100000 --seed 42 --profile messy --output-dir data\synthetic\messy-100k
+```
+
+The clean profile is intended for timing runs. The messy profile injects the error and schema-drift
+cases listed in `ground_truth.json` for behavior tests. Generated files are synthetic and excluded
+from version control by `.gitignore`.
+
+## Legacy read-stage benchmark
+
+The optional legacy baseline measures a limited ingestion path: Excel read, the legacy no-op
+transform path, and SQLite database/schema setup and load for synthetic GL input. It is not an
+end-to-end ETL comparison. Generate the clean 100K and 1M datasets first, then copy only the legacy
+backend's `src` folder into a local, isolated sandbox under
+`%LOCALAPPDATA%\FIA-ETL-Benchmark\legacy`; do not copy its data or use its existing configuration.
+The benchmark runner writes sanitized configuration into that copy and creates a fresh SQLite
+database for every run.
+
+```
+$benchmarkRoot = Join-Path $env:LOCALAPPDATA "FIA-ETL-Benchmark"
+$legacySource = "C:\path\to\FIA Backend ETL"
+$legacySandbox = Join-Path $benchmarkRoot "legacy"
+New-Item -ItemType Directory -Path $legacySandbox
+Copy-Item -LiteralPath (Join-Path $legacySource "src") -Destination $legacySandbox -Recurse
+New-Item -ItemType Directory -Path (Join-Path $legacySandbox "resources\configuration")
+
+uv run python -m tools.benchmark_legacy_read `
+  --benchmark-root $benchmarkRoot `
+  --legacy-python "$env:LOCALAPPDATA\anaconda3\envs\OTC_venv2\python.exe" `
+  --conda-executable "$env:LOCALAPPDATA\anaconda3\Scripts\conda.exe" `
+  --conda-environment OTC_venv2
+```
+
+The runner records input hashes, environment details, per-run timings and row counts, summary
+statistics, and subprocess logs outside the repository. The completed legacy-only baseline is
+summarized in [benchmarks/legacy-read/README.md](./benchmarks/legacy-read/README.md); it is not an
+end-to-end comparison, and the Step 3 comparison is still pending.
+
 ## Working with Copilot (VS Code agent mode)
 
 The rules are written for the agent to follow automatically.

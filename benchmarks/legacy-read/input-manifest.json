@@ -1,0 +1,180 @@
+{
+  "clean-100k": {
+    "files": [
+      {
+        "file": "GL_2025-07.xlsx",
+        "period": "2025-07",
+        "row_count": 8334,
+        "sha256": "6448d514559d0dedf275f9d26c64a2c070dd5c3dfb27d834e30af72f8277d404",
+        "size_bytes": 267707
+      },
+      {
+        "file": "GL_2025-08.xlsx",
+        "period": "2025-08",
+        "row_count": 8334,
+        "sha256": "25230c32b7173f050e87b488f3f2946059c3b4269cecc09284359747bf7df938",
+        "size_bytes": 267454
+      },
+      {
+        "file": "GL_2025-09.xlsx",
+        "period": "2025-09",
+        "row_count": 8334,
+        "sha256": "a01e2ac5919644a2d27413297a930ed87efe3b6664808a7b67023b0143d89f46",
+        "size_bytes": 267715
+      },
+      {
+        "file": "GL_2025-10.xlsx",
+        "period": "2025-10",
+        "row_count": 8334,
+        "sha256": "5fec7fe5e292041b20894f31649b77d69ee690393b8da081b90d2f6262a61063",
+        "size_bytes": 267738
+      },
+      {
+        "file": "GL_2025-11.xlsx",
+        "period": "2025-11",
+        "row_count": 8333,
+        "sha256": "b34626866b6252776adb243e604d5f72c6417f35835724f7c4177ecbaa76732d",
+        "size_bytes": 267730
+      },
+      {
+        "file": "GL_2025-12.xlsx",
+        "period": "2025-12",
+        "row_count": 8333,
+        "sha256": "24da2ecd1aab2a309c8c831f60940f30abcd5c843f080858a3548eea6b4db230",
+        "size_bytes": 267645
+      },
+      {
+        "file": "GL_2026-01.xlsx",
+        "period": "2026-01",
+        "row_count": 8333,
+        "sha256": "78d7a41903969486175750101c63f397e0c1fa0743cf102bc4a5756eb3d6efd2",
+        "size_bytes": 292837
+      },
+      {
+        "file": "GL_2026-02.xlsx",
+        "period": "2026-02",
+        "row_count": 8333,
+        "sha256": "49a021ae65fc2806084b67190c202a97c900261fd90e8a7f5ecab2d4eb3b7a2a",
+        "size_bytes": 293028
+      },
+      {
+        "file": "GL_2026-03.xlsx",
+        "period": "2026-03",
+        "row_count": 8333,
+        "sha256": "b85980d7d5b63523fa5ac4d80c7da2ac507f831159e4d1966d1bfc4dd8e6d016",
+        "size_bytes": 293157
+      },
+      {
+        "file": "GL_2026-04.xlsx",
+        "period": "2026-04",
+        "row_count": 8333,
+        "sha256": "e785be94c4b899f3009a132175d10b530ec9acaca1004762e03874d9da673041",
+        "size_bytes": 292757
+      },
+      {
+        "file": "GL_2026-05.xlsx",
+        "period": "2026-05",
+        "row_count": 8333,
+        "sha256": "08ddd93301417d60c64da3d63244161ddba39f64e3442a5882ee4fe3c3971b69",
+        "size_bytes": 292902
+      },
+      {
+        "file": "GL_2026-06.xlsx",
+        "period": "2026-06",
+        "row_count": 8333,
+        "sha256": "866b8ee0acf0ae9f843ef0cfcfb57f13b7ac9884c27f17432d5d0fadde2fcf33",
+        "size_bytes": 293137
+      }
+    ],
+    "row_count": 100000
+  },
+  "clean-1m": {
+    "files": [
+      {
+        "file": "GL_2025-07.xlsx",
+        "period": "2025-07",
+        "row_count": 83334,
+        "sha256": "433eccd169efb73bcd045f8b8f8c145d7b47fa71ff9fa056e25a3c9869f338de",
+        "size_bytes": 2627557
+      },
+      {
+        "file": "GL_2025-08.xlsx",
+        "period": "2025-08",
+        "row_count": 83334,
+        "sha256": "2238e0ad925aafa06c430196e9f2ee6ae43e2b588fc02f116296cbdae711bd83",
+        "size_bytes": 2628465
+      },
+      {
+        "file": "GL_2025-09.xlsx",
+        "period": "2025-09",
+        "row_count": 83334,
+        "sha256": "082170c4afcbca5afa0b55a0be65b9b8c1457fc23e6aed84ee107cf7e2f8f045",
+        "size_bytes": 2627717
+      },
+      {
+        "file": "GL_2025-10.xlsx",
+        "period": "2025-10",
+        "row_count": 83334,
+        "sha256": "d7f85435630ee26c191a7e271f9e89568ac19f5a5ee89b483953a0d872216aae",
+        "size_bytes": 2627930
+      },
+      {
+        "file": "GL_2025-11.xlsx",
+        "period": "2025-11",
+        "row_count": 83333,
+        "sha256": "eeccf0ba2466ef2da7c5e859b01398f87029c67e677ed03d62a6b21d8fc49d9f",
+        "size_bytes": 2628132
+      },
+      {
+        "file": "GL_2025-12.xlsx",
+        "period": "2025-12",
+        "row_count": 83333,
+        "sha256": "4152e5096fb1ad676cc19f74c5b93224df10e59042e1003e7c1692896bfdb3bb",
+        "size_bytes": 2628108
+      },
+      {
+        "file": "GL_2026-01.xlsx",
+        "period": "2026-01",
+        "row_count": 83333,
+        "sha256": "35c74e111a5b0c8c71c18dd473dbc6f45b4d2bacddaaa1f7e9b4dd5ace33914e",
+        "size_bytes": 2888218
+      },
+      {
+        "file": "GL_2026-02.xlsx",
+        "period": "2026-02",
+        "row_count": 83333,
+        "sha256": "70ef91a5077a689f54c2835c92f82c71c097af9cd5c4228df22ec3991be39716",
+        "size_bytes": 2888384
+      },
+      {
+        "file": "GL_2026-03.xlsx",
+        "period": "2026-03",
+        "row_count": 83333,
+        "sha256": "5508cbb33015e45626d36b8255355bb874e47514bc0f1515d09844c1034a8035",
+        "size_bytes": 2889089
+      },
+      {
+        "file": "GL_2026-04.xlsx",
+        "period": "2026-04",
+        "row_count": 83333,
+        "sha256": "ded6aadc46b9da64b22d70022112449ea17df8a4c8b79b2f4d7038e1695a21d9",
+        "size_bytes": 2887701
+      },
+      {
+        "file": "GL_2026-05.xlsx",
+        "period": "2026-05",
+        "row_count": 83333,
+        "sha256": "3b82be3ef89562812d823370b4eb897ef269e33a2f26b23f978fbf40b28f5a2e",
+        "size_bytes": 2888592
+      },
+      {
+        "file": "GL_2026-06.xlsx",
+        "period": "2026-06",
+        "row_count": 83333,
+        "sha256": "c748679bfabf420718c6f966ea1533d594c780a451a88520f330ee4d8b06d44d",
+        "size_bytes": 2888973
+      }
+    ],
+    "row_count": 1000000
+  }
+}

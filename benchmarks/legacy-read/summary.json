@@ -1,0 +1,40 @@
+{
+  "benchmark_scope": "legacy read-stage ingestion baseline (synthetic GL)",
+  "datasets": {
+    "100000": {
+      "all_runs_loaded_expected_row_count": true,
+      "expected_runs": 5,
+      "loaded_row_counts": [
+        100000,
+        100000,
+        100000,
+        100000,
+        100000
+      ],
+      "measured_runs": 5,
+      "valid_runs": 5,
+      "wall_seconds": {
+        "max": 7.7522348999999995,
+        "median": 6.9010123,
+        "min": 6.6498839
+      }
+    },
+    "1000000": {
+      "all_runs_loaded_expected_row_count": true,
+      "expected_runs": 3,
+      "loaded_row_counts": [
+        1000000,
+        1000000,
+        1000000
+      ],
+      "measured_runs": 3,
+      "valid_runs": 3,
+      "wall_seconds": {
+        "max": 89.2504993,
+        "median": 87.6230605,
+        "min": 66.1156998
+      }
+    }
+  },
+  "end_to_end_comparison": false
+}

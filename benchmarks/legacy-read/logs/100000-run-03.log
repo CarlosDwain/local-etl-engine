@@ -1,0 +1,7 @@
+exit_code=0
+timed_out=False
+
+--- stdout ---
+BENCHMARK_RESULT={"stage_wall_seconds": 6.8698648, "stage_cpu_seconds": 6.578125, "peak_rss_bytes": 139481088, "input_files": 12, "successful_files": 12, "failed_files": 0, "rows_loaded": 100000, "statuses": 48}
+
+--- stderr ---
