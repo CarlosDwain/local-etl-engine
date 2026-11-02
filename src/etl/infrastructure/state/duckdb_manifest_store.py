@@ -1,11 +1,52 @@
-"""ManifestStore persisted in a small DuckDB file under <working>/state. TODO(step 3)."""
+"""Persist incremental manifest entries in a small DuckDB file."""
 
-from etl.domain.manifest import ManifestEntry
+from datetime import datetime
+from pathlib import Path
+
+import duckdb
+
+from etl.domain.manifest import FileStatus, ManifestEntry
 
 
 class DuckDbManifestStore:
+    def __init__(self, database: Path) -> None:
+        database.parent.mkdir(parents=True, exist_ok=True)
+        self._connection = duckdb.connect(str(database))
+        self._connection.execute(
+            "CREATE TABLE IF NOT EXISTS manifest ("
+            "path VARCHAR PRIMARY KEY, content_hash VARCHAR, contract_hash VARCHAR, "
+            "status VARCHAR, processed_at VARCHAR)"
+        )
+
     def get(self, path: str) -> ManifestEntry | None:
-        raise NotImplementedError("TODO(step 3)")
+        row = self._connection.execute(
+            "SELECT content_hash, contract_hash, status, processed_at FROM manifest WHERE path = ?",
+            [path],
+        ).fetchone()
+        if row is None:
+            return None
+        return ManifestEntry(
+            path=path,
+            content_hash=str(row[0]),
+            contract_hash=str(row[1]),
+            status=FileStatus(str(row[2])),
+            processed_at=datetime.fromisoformat(str(row[3])),
+        )
 
     def upsert(self, entry: ManifestEntry) -> None:
-        raise NotImplementedError("TODO(step 3)")
+        self._connection.execute(
+            "INSERT INTO manifest VALUES (?, ?, ?, ?, ?) "
+            "ON CONFLICT(path) DO UPDATE SET content_hash = excluded.content_hash, "
+            "contract_hash = excluded.contract_hash, status = excluded.status, "
+            "processed_at = excluded.processed_at",
+            [
+                entry.path,
+                entry.content_hash,
+                entry.contract_hash,
+                entry.status.value,
+                entry.processed_at.isoformat(),
+            ],
+        )
+
+    def close(self) -> None:
+        self._connection.close()

@@ -41,13 +41,31 @@ class QueryEngine(Protocol):
         self, sql: str, params: Mapping[str, object] | None = None
     ) -> list[tuple[object, ...]]: ...
 
+    def copy_relation(self, relation: str, destination: Path) -> None: ...
+
 
 class LayerStore(Protocol):
     """Reads and atomically replaces Parquet partitions (D-8)."""
 
-    def write_partition(self, layer: Layer, table: str, period: Period, source: Path) -> None: ...
+    def write_rows(
+        self,
+        layer: Layer,
+        table: str,
+        period: Period,
+        columns: Sequence[str],
+        rows: Sequence[Sequence[str | None]],
+    ) -> None: ...
 
     def list_partitions(self, layer: Layer, table: str) -> list[Period]: ...
+
+    def export_relation(
+        self,
+        layer: Layer,
+        table: str,
+        period: Period,
+        relation: str,
+        engine: QueryEngine,
+    ) -> None: ...
 
 
 class ManifestStore(Protocol):
