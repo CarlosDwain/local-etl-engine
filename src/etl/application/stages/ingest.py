@@ -6,6 +6,7 @@ import re
 from datetime import UTC, datetime
 from pathlib import Path
 
+from etl.application.drift import DriftDetector
 from etl.application.manifest import ManifestService
 from etl.application.ports import (
     ContractRepository,
@@ -62,8 +63,33 @@ class IngestStage(Stage[list[SourceFile]]):
         del ctx
         contracts = {contract.name: contract for contract in self._contracts.load_all()}
         rows_out = 0
+        files_failed = 0
+        messages: list[str] = []
         for file in plan:
             contract = contracts[file.source]
+            headers = self._reader.headers(file.path, contract)
+            drift = DriftDetector().detect(contract, headers)
+            if drift.missing_required:
+                files_failed += 1
+                message = f"{file.path.name}: missing required columns: " + ", ".join(
+                    drift.missing_required
+                )
+                messages.append(message)
+                self._manifest_store.upsert(
+                    ManifestEntry(
+                        path=str(file.path),
+                        content_hash=_sha256(file.path),
+                        contract_hash=_contract_hash(contract),
+                        layout_hash=_layout_hash(headers),
+                        status=FileStatus.FAILED,
+                        processed_at=datetime.now(UTC),
+                    )
+                )
+                continue
+            if drift.unknown_headers:
+                messages.append(
+                    f"{file.path.name}: unknown columns: " + ", ".join(drift.unknown_headers)
+                )
             period_match = re.fullmatch(contract.period_from_filename, file.path.name)
             if period_match is None:
                 raise IngestError(f"Could not determine period from {file.path.name}")
@@ -101,11 +127,22 @@ class IngestStage(Stage[list[SourceFile]]):
                     path=str(file.path),
                     content_hash=file_hash,
                     contract_hash=_contract_hash(contract),
+                    layout_hash=_layout_hash(headers),
                     status=FileStatus.PROCESSED,
                     processed_at=datetime.now(UTC),
                 )
             )
-        return StageResult(stage=self.name, rows_in=len(plan), rows_out=rows_out)
+        return StageResult(
+            stage=self.name,
+            rows_in=len(plan),
+            rows_out=rows_out,
+            files_failed=files_failed,
+            messages=tuple(messages),
+        )
+
+
+def _layout_hash(headers: tuple[str, ...]) -> str:
+    return hashlib.sha256("\0".join(headers).encode("utf-8")).hexdigest()
 
 
 def _sha256(path: Path) -> str:

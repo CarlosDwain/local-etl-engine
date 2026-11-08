@@ -2,6 +2,7 @@
 
 from collections.abc import Sequence
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Protocol
 
 from etl.application.ports import QueryEngine
@@ -19,6 +20,23 @@ class Check(Protocol):
     name: str
 
     def run(self, engine: QueryEngine, table: str) -> CheckResult: ...
+
+
+@dataclass(frozen=True)
+class SqlQualityCheck:
+    name: str
+    sql_path: Path
+
+    def run(self, engine: QueryEngine, table: str) -> CheckResult:
+        del table
+        sql = self.sql_path.read_text(encoding="utf-8").strip()
+        rows = engine.fetch_all(sql)
+        failures = int(str(rows[0][0])) if rows else 0
+        return CheckResult(
+            check=self.name,
+            passed=failures == 0,
+            detail=f"{failures} rows have null business keys" if failures else "",
+        )
 
 
 class QualityGate:

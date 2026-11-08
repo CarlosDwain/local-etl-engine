@@ -12,6 +12,13 @@ _BATCH_SIZE = 100_000
 
 
 class CsvReader:
+    def headers(self, path: Path, contract: Contract) -> tuple[str, ...]:
+        with path.open("r", encoding="utf-8-sig", newline="") as source:
+            for _ in range(contract.sheet.header_row - 1):
+                source.readline()
+            reader = csv.reader(source)
+            return tuple(header.strip() for header in next(reader, []))
+
     def read(self, path: Path, contract: Contract) -> Iterator[RawBatch]:
         with path.open("r", encoding="utf-8-sig", newline="") as source:
             for _ in range(contract.sheet.header_row - 1):

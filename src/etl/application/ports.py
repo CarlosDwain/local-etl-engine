@@ -5,6 +5,7 @@ Sketch only: refine signatures as the build steps need.
 """
 
 from collections.abc import Iterator, Mapping, Sequence
+from datetime import datetime
 from pathlib import Path
 from typing import Protocol
 
@@ -28,6 +29,8 @@ class FileSource(Protocol):
 
 class SourceReader(Protocol):
     """Reads one file into batches of text rows (Excel, later CSV)."""
+
+    def headers(self, path: Path, contract: Contract) -> tuple[str, ...]: ...
 
     def read(self, path: Path, contract: Contract) -> Iterator[RawBatch]: ...
 
@@ -86,6 +89,10 @@ class Exporter(Protocol):
     """Writes a finished table to an output file (Excel, Parquet)."""
 
     def export(self, table: str, dest: Path) -> Path: ...
+
+
+class FileArchiver(Protocol):
+    def archive(self, source: Path, processed_at: datetime | None = None) -> Path: ...
 
 
 class ProgressReporter(Protocol):
