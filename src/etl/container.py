@@ -4,11 +4,13 @@ Use explicit imports, never dynamic discovery (C-10): PyInstaller cannot see dyn
 """
 
 from etl.application.pipeline import PipelineRunner
+from etl.application.stages.archive import ArchiveStage
 from etl.application.stages.export import ExportStage
 from etl.application.stages.ingest import IngestStage
 from etl.application.stages.marts import MartStage
 from etl.application.stages.staging import StagingStage
 from etl.config import AppConfig
+from etl.infrastructure.archive.local_file_archiver import LocalFileArchiver
 from etl.infrastructure.contracts.yaml_repository import YamlContractRepository
 from etl.infrastructure.engine.duckdb_engine import DuckDbEngine
 from etl.infrastructure.exporters.excel_xlsxwriter import XlsxExporter
@@ -36,8 +38,9 @@ def build_runner(config: AppConfig) -> PipelineRunner:
     exporter = XlsxExporter(engine)
     stages = (
         IngestStage(contracts, source, reader, store, manifest),
-        StagingStage(engine, store, sql_dir, data_dir),
+        StagingStage(engine, store, sql_dir, data_dir, contracts),
         MartStage(engine, store, sql_dir),
         ExportStage((exporter,), store, config.output_dir),
+        ArchiveStage(source, LocalFileArchiver(data_dir / "archive" / gl_contract.name)),
     )
     return PipelineRunner(stages=stages, reporter=ConsoleReporter(), run_log=LoggingRunLogStore())

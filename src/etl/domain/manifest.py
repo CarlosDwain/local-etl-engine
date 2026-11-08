@@ -17,3 +17,4 @@ class ManifestEntry:
     contract_hash: str
     status: FileStatus
     processed_at: datetime
+    layout_hash: str = ""

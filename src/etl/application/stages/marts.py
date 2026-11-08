@@ -1,8 +1,10 @@
 """Build mart tables from staging partitions."""
 
 from pathlib import Path
+from typing import cast
 
 from etl.application.ports import LayerStore, QueryEngine
+from etl.application.quality import Check, QualityGate, SqlQualityCheck
 from etl.application.stages.base import RunContext, Stage
 from etl.domain.layer import Layer
 from etl.domain.period import Period
@@ -24,6 +26,14 @@ class MartStage(Stage[list[str]]):
             for period in self._store.list_partitions(Layer.STAGING, "stg_gl_actuals"):
                 plans.append(f"{sql_path.stem}:{period}")
         return plans
+
+    def validate(self, result: StageResult, ctx: RunContext) -> None:
+        del result, ctx
+        quality_path = self._sql_dir / "quality" / "stg_gl_actuals.sql"
+        if quality_path.is_file():
+            check = cast(Check, SqlQualityCheck("business keys", quality_path))
+            gate = QualityGate((check,))
+            gate.enforce(self._engine, "stg_gl_actuals")
 
     def execute(self, plan: list[str], ctx: RunContext) -> StageResult:
         del ctx

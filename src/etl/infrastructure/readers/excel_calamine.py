@@ -12,6 +12,24 @@ _BATCH_SIZE = 100_000
 
 
 class CalamineExcelReader:
+    def headers(self, path: Path, contract: Contract) -> tuple[str, ...]:
+        workbook = CalamineWorkbook.from_path(path)
+        try:
+            sheet = (
+                workbook.get_sheet_by_name(contract.sheet.name)
+                if contract.sheet.name is not None
+                else workbook.get_sheet_by_index(0)
+            )
+            rows = sheet.to_python()
+            header_index = contract.sheet.header_row - 1
+            if header_index >= len(rows):
+                return ()
+            return tuple(
+                str(value).strip() if value is not None else "" for value in rows[header_index]
+            )
+        finally:
+            workbook.close()
+
     def read(self, path: Path, contract: Contract) -> Iterator[RawBatch]:
         workbook = CalamineWorkbook.from_path(path)
         try:
